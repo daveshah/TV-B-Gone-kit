@@ -1,15 +1,35 @@
 #!/usr/bin/ruby
 
-class Pair
-	attr_accessor :on
-	attr_accessor :off
+class PulsePair
+
+	attr_reader :on
+	attr_reader :off
+
+	def initialize(on,off)
+		@on = on
+		@off = off
+	end
 end
+
+class TelevisionCode
+	attr_accessor :carrier_frequency
+	
+	def initialize
+		@pulse_pairs = []
+	end
+
+	def add(pulse_pair)
+		@pulse_pairs.push(pulse_pair)
+	end
+end
+
+
 
 def round(number)
 	(number + 0.5).to_i
 end
 
-Dir.glob("Test1/*.dat") do |file| 
+Dir.glob("**/*.dat") do |file| 
 
 	average_period = 0
 	freq = 0
@@ -31,15 +51,10 @@ Dir.glob("Test1/*.dat") do |file|
 				current_pulse_length += time_on + time_off
 			else
 				current_pulse_length += time_on 
-				current_pulse_length = round(current_pulse_length/10000)*100
-				pair = Pair.new
-				pair.on = current_pulse_length
+				pair = PulsePair.new( round(current_pulse_length/10000)*100 , round(time_off/10000)*100 )
 
-				current_pulse_length = 0
-				time_off = round(time_off/10000)*100
-
-				pair.off = time_off
 				puts "#{pair.on} : #{pair.off}"
+				current_pulse_length = 0
 		    end
 		end
 	end
